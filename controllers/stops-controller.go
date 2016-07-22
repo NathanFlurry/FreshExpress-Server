@@ -5,15 +5,15 @@ import (
 	"fresh-express-server/models"
 )
 
-type StopController struct {
+type StopsController struct {
 	beego.Controller
 }
 
-func (this *StopController) Get() {
+func (this *StopsController) Get() {
 	qs := (*models.GetOrmer()).QueryTable(new(models.BusStop))
 
-	var stops []*models.ScheduleItem
-	_, _ = qs.All(&stops)
+	var stops []*models.BusStop
+	_, _ = qs.RelatedSel().All(&stops)
 
 	this.Data["json"] = map[string]interface{} {
 		"stops": stops,

@@ -4,16 +4,17 @@ import (
 	"github.com/astaxie/beego/orm"
 	"fmt"
 	"time"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 var ormer orm.Ormer
 
-func init() {
+func InitORM() {
 	// Enable debug for the ORM
-	orm.Debug = true
+	orm.Debug = false
 
 	// Register the models
-	orm.RegisterModel(new(Bus), new(FoodItem), new(ScheduleItem), new(BusStop))
+	orm.RegisterModel(new(Bus), new(BusStop), new(FoodItem), new(ScheduleItem))
 
 	// Register the database
 	orm.RegisterDriver("mysql", orm.DRMySQL)
@@ -34,11 +35,12 @@ func init() {
 
 func InitData() {
 	// Create the bus
-	bus := Bus{}
+	bus := Bus{Name: "Bus OG"}
 
 	// Create the foods
 	foods := []FoodItem {
-		{Buses: []*Bus{ &bus }, Name: "Banana", Cost: 10.00},
+		{Name: "Banana", Cost: 10.00},
+		{Name: "Apple", Cost: 7.00},
 	}
 
 	// Create the bus stops
@@ -98,22 +100,22 @@ func InitData() {
 	for i, v := range quickSchedule {
 		schedule[i] = ScheduleItem{
 			Bus: &bus,
-			Stop: &stops[v.SN],
+			Stop: &stops[v.SN], // TODO: Figure out why stops is not working
 			StartDate: orm.DateTimeField(time.Date(2016, time.Month(v.M), v.D, v.SH, v.SM, 0, 0, time.UTC)),
 			EndDate: orm.DateTimeField(time.Date(2016, time.Month(v.M), v.D, v.EH, v.EM, 0, 0, time.UTC)),
 		}
 	}
 
 	// Save the items
-	//ormer.Insert(&bus) // TODO: Add back, getting divide by zero error
-	for _, f := range foods {
-		ormer.Insert(&f)
-	}
-	for _, s := range stops {
-		ormer.Insert(&s)
-	}
-	for _, si := range schedule {
-		ormer.Insert(&si)
+	ormer.Insert(&bus)
+	HandleInsertMulti(ormer.InsertMulti(len(foods), foods))
+	HandleInsertMulti(ormer.InsertMulti(len(stops), stops))
+	HandleInsertMulti(ormer.InsertMulti(len(schedule), schedule))
+}
+
+func HandleInsertMulti(successNum int64, err error) {
+	if err != nil {
+		fmt.Errorf("Success num: %v\n%v\n", successNum, err)
 	}
 }
 

@@ -13,7 +13,7 @@ func (this *ScheduleController) Get() {
 	qs := (*models.GetOrmer()).QueryTable(new(models.ScheduleItem))
 
 	var items []*models.ScheduleItem
-	_, _ = qs.All(&items)
+	_, _ = qs.RelatedSel().All(&items)
 
 	this.Data["json"] = map[string]interface{} {
 		"items": items,

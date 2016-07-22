@@ -5,18 +5,18 @@ import (
 	"fresh-express-server/models"
 )
 
-type BusController struct {
+type BusesController struct {
 	beego.Controller
 }
 
-func (this *BusController) Get() {
+func (this *BusesController) Get() {
 	qs := (*models.GetOrmer()).QueryTable(new(models.Bus))
 
-	var busses []*models.Bus
-	_, _ = qs.All(&busses)
+	var buses []*models.Bus
+	_, _ = qs.RelatedSel().All(&buses)
 
 	this.Data["json"] = map[string]interface{} {
-		"busses": busses,
+		"buses": buses,
 	}
 
 	this.ServeJSON()

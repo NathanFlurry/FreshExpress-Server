@@ -2,8 +2,10 @@ package controllers
 
 import "github.com/astaxie/beego"
 
-func init() {
+func InitRouters() {
 	// Route the controllers
-	beego.Router("/bus", BusController{})
-	beego.Router("/schedule", ScheduleController{})
+	beego.Router("/buses", &BusesController{})
+	beego.Router("/schedule", &ScheduleController{})
+	beego.Router("/foods", &FoodsController{})
+	beego.Router("/stops", &StopsController{})
 }

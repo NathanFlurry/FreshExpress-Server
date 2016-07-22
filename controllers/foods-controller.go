@@ -12,11 +12,11 @@ type FoodsController struct {
 func (this *FoodsController) Get() {
 	qs := (*models.GetOrmer()).QueryTable(new(models.FoodItem))
 
-	var foods []*models.ScheduleItem
-	_, _ = qs.All(&foods)
+	var foods []*models.FoodItem
+	_, _ = qs.RelatedSel().All(&foods)
 
 	this.Data["json"] = map[string]interface{} {
-		"foodsj": foods,
+		"foods": foods,
 	}
 
 	this.ServeJSON()
