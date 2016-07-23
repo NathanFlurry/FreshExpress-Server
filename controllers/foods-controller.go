@@ -10,7 +10,7 @@ type FoodsController struct {
 }
 
 func (this *FoodsController) Get() {
-	qs := (*models.GetOrmer()).QueryTable(new(models.FoodItem))
+	qs := models.Ormer.QueryTable(new(models.FoodItem))
 
 	var foods []*models.FoodItem
 	_, _ = qs.RelatedSel().All(&foods)

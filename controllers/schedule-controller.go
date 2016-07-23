@@ -10,7 +10,7 @@ type ScheduleController struct {
 }
 
 func (this *ScheduleController) Get() {
-	qs := (*models.GetOrmer()).QueryTable(new(models.ScheduleItem))
+	qs := models.Ormer.QueryTable(new(models.ScheduleItem))
 
 	var items []*models.ScheduleItem
 	_, _ = qs.RelatedSel().All(&items)

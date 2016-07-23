@@ -10,13 +10,13 @@ type StopsController struct {
 }
 
 func (this *StopsController) Get() {
-	qs := (*models.GetOrmer()).QueryTable(new(models.BusStop))
+	qs := models.Ormer.QueryTable(new(models.BusStop))
 
 	var stops []*models.BusStop
 	_, _ = qs.RelatedSel().All(&stops)
 
 	this.Data["json"] = map[string]interface{} {
-		"stops": stops,
+		"items": stops,
 	}
 
 	this.ServeJSON()

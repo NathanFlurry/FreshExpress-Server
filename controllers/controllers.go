@@ -8,4 +8,5 @@ func InitRouters() {
 	beego.Router("/schedule", &ScheduleController{})
 	beego.Router("/foods", &FoodsController{})
 	beego.Router("/stops", &StopsController{})
+	beego.Router("/stop/:id:int", &SingleStopController{})
 }

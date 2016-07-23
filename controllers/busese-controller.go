@@ -10,7 +10,7 @@ type BusesController struct {
 }
 
 func (this *BusesController) Get() {
-	qs := (*models.GetOrmer()).QueryTable(new(models.Bus))
+	qs := models.Ormer.QueryTable(new(models.Bus))
 
 	var buses []*models.Bus
 	_, _ = qs.RelatedSel().All(&buses)
