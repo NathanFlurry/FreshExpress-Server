@@ -21,7 +21,7 @@ func InitORM() {
 	orm.RegisterDataBase("default", "mysql", "root@/freshexpress") // user:password@/dbname
 
 	// Generate the DB
-	err := orm.RunSyncdb("default", true, true)
+	err := orm.RunSyncdb("default", true, false)
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -39,8 +39,16 @@ func InitData() { // See http://www.discoverytriangle.org/cms2/wp-content/upload
 
 	// Create the foods
 	foods := []*FoodItem {
-		{Name: "Banana", Cost: 10.00},
-		{Name: "Apple", Cost: 7.00},
+		{Name: "Broccoli", Description: "Rich in Vitamin K, Vitamin C, Fiber, Potassium, and Folate. Proven to prevent blood clots and even cancer.", Cost: 1.00},
+		{Name: "Garlic", Description: "Garlic is great for preventing high blood presure and even cancer.", Cost: 1.00},
+		{Name: "Spinach", Description: "Rich in vitamin A, Vitamin K, and folate. Spinach is especially good for your eyes.", Cost: 1.00},
+		{Name: "Tomatoes", Description: "Even though tomatoes are not a vegetable, they are still great for preventing cardiovascular disease.", Cost: 1.00},
+
+		{Name: "Blueberries", Description: "While mighty tasteful, blueberries are also very good at inhibiting radical cells in your body. It's great for preventing neurodegenerative diseases.", Cost: 1.00},
+		{Name: "Orange", Description: "Citrus fruites are known for being rich in vitamin C which protects the body from free radicals.", Cost: 1.00},
+		{Name: "Cranberries", Description: "Oh! Look! A patern! Apparently cranberries prevent cancer too.", Cost: 1.00},
+		{Name: "Grapes", Description: "Used in wine. But alcohol causes cancer. So don't drink wine, just eat grapes.", Cost: 1.00},
+		{Name: "Strawberries", Description: "They're red and delicious and not an apple. Who cares what superpowers they give you, just eat them because they're good.", Cost: 1.00},
 	}
 
 	// Create the bus stops
