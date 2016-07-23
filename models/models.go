@@ -7,7 +7,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var ormer orm.Ormer
+var Ormer orm.Ormer
 
 func InitORM() {
 	// Enable debug for the ORM
@@ -21,30 +21,30 @@ func InitORM() {
 	orm.RegisterDataBase("default", "mysql", "root@/freshexpress") // user:password@/dbname
 
 	// Generate the DB
-	err := orm.RunSyncdb("default", true, false)
+	err := orm.RunSyncdb("default", true, true)
 	if err != nil {
 		fmt.Println(err)
 	}
 
 	// Get the ormer
-	ormer = orm.NewOrm()
+	Ormer = orm.NewOrm()
 
 	// Generate the items
 	InitData()
 }
 
-func InitData() {
+func InitData() { // See http://www.discoverytriangle.org/cms2/wp-content/uploads/2016/07/07.2016_FE-Schedule2.pdf
 	// Create the bus
 	bus := Bus{Name: "Bus OG"}
 
 	// Create the foods
-	foods := []FoodItem {
+	foods := []*FoodItem {
 		{Name: "Banana", Cost: 10.00},
 		{Name: "Apple", Cost: 7.00},
 	}
 
 	// Create the bus stops
-	stops := []BusStop {
+	stops := []*BusStop {
 		{LocationName: "Brunson Lee/Educare", Address: "1300 N 48th St"},
 		{LocationName: "Sidney P. Osborn", Address: "1720 E. Adams St"},
 		{LocationName: "Downtown Phoenix", Address: "2nd Ave & Adams "},
@@ -96,29 +96,34 @@ func InitData() {
 	}
 
 	// Generate the schedule
-	schedule := make([]ScheduleItem, len(quickSchedule))
+	schedule := make([]*ScheduleItem, len(quickSchedule))
 	for i, v := range quickSchedule {
-		schedule[i] = ScheduleItem{
+		schedule[i] = &ScheduleItem{
 			Bus: &bus,
-			Stop: &stops[v.SN], // TODO: Figure out why stops is not working
+			//Stop: stops[v.SN], // TODO: Figure out why stops is not working
 			StartDate: orm.DateTimeField(time.Date(2016, time.Month(v.M), v.D, v.SH, v.SM, 0, 0, time.UTC)),
 			EndDate: orm.DateTimeField(time.Date(2016, time.Month(v.M), v.D, v.EH, v.EM, 0, 0, time.UTC)),
 		}
 	}
 
 	// Save the items
-	ormer.Insert(&bus)
-	HandleInsertMulti(ormer.InsertMulti(len(foods), foods))
-	HandleInsertMulti(ormer.InsertMulti(len(stops), stops))
-	HandleInsertMulti(ormer.InsertMulti(len(schedule), schedule))
+	Ormer.Insert(&bus)
+	HandleInsertMulti(Ormer.InsertMulti(len(foods), foods))
+	HandleInsertMulti(Ormer.InsertMulti(len(stops), stops))
+	HandleInsertMulti(Ormer.InsertMulti(len(schedule), schedule))
+
+	// HACK: Change the ID by hand because this is being a butt
+	for i, _ := range schedule {
+		Ormer.QueryTable(new(ScheduleItem)).Filter("Id", i + 1).Update(orm.Params{
+			"stop_id": quickSchedule[i].SN + 1,
+		})
+	}
 }
 
 func HandleInsertMulti(successNum int64, err error) {
 	if err != nil {
 		fmt.Errorf("Success num: %v\n%v\n", successNum, err)
+	} else {
+		fmt.Printf("Successfully inserted %v\n", successNum)
 	}
-}
-
-func GetOrmer() *orm.Ormer {
-	return &ormer
 }
